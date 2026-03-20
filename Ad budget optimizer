@@ -1,0 +1,61 @@
+# Ad Budget Optimizer (AdTech Project)
+
+# Function to calculate CTR
+def calculate_ctr(clicks, impressions):
+    if impressions == 0:
+        return 0
+    return clicks / impressions
+
+
+# Function to allocate budget
+def allocate_budget(ads, total_budget):
+
+    # Step 1: Calculate CTR
+    for ad in ads:
+        ad["ctr"] = calculate_ctr(ad["clicks"], ad["impressions"])
+
+    # Step 2: Total CTR
+    total_ctr = sum(ad["ctr"] for ad in ads)
+
+    # Step 3: Allocate budget
+    for ad in ads:
+        if total_ctr == 0:
+            ad["budget"] = 0
+        else:
+            ad["budget"] = (ad["ctr"] / total_ctr) * total_budget
+
+    return ads
+
+
+# Function to display results
+def display_results(ads):
+    print("\n=== Final Budget Allocation ===")
+    for ad in ads:
+        print(f"{ad['name']} | CTR: {round(ad['ctr'],4)} | Budget: ₹{round(ad['budget'],2)}")
+
+
+# -------- MAIN PROGRAM --------
+
+ads = []
+
+n = int(input("Enter number of ads: "))
+total_budget = float(input("Enter total budget (₹): "))
+
+for i in range(n):
+    print(f"\nEnter details for Ad {i+1}")
+
+    name = input("Ad name: ")
+    impressions = int(input("Impressions: "))
+    clicks = int(input("Clicks: "))
+
+    ads.append({
+        "name": name,
+        "impressions": impressions,
+        "clicks": clicks
+    })
+
+# Run optimizer
+optimized_ads = allocate_budget(ads, total_budget)
+
+# Show output
+display_results(optimized_ads)
